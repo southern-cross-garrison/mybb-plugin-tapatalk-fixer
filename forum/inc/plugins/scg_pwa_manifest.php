@@ -27,9 +27,9 @@ function scg_manifest_info()
     return array(
         'name'          => 'SCG PWA Manifest',
         'description'   => 'Provides custom PWA manifest with SCG branding instead of Tapatalk icons. This ensures users who install the forum as a Progressive Web App see the correct SCG logo.',
-        'website'       => 'https://scg.501staustralia.com/',
-        'author'        => 'SCG Web Team',
-        'authorsite'    => 'https://scg.501staustralia.com/',
+        'website'       => 'https://501scg.org/',
+        'author'        => 'SCG Web Team - Kevin Brown (TK-33151)',
+        'authorsite'    => 'https://501scg.org/',
         'version'       => '1.0',
         'compatibility' => '18*',
         'codename'      => 'scg_manifest'
@@ -86,4 +86,5 @@ function scg_manifest_fix()
     // The manifest.json file should be placed in the forum root directory
     $headerinclude .= "\n" . '<link rel="manifest" href="/forum/manifest.json">' . "\n";
 }
+
 
