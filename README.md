@@ -1,12 +1,8 @@
-# SCG PWA Manifest Plugin
+# SCG Tapatalk Fixer
 
-A MyBB plugin that overrides Tapatalk's PWA manifest with Southern Cross Garrison branding.
-
-## Why This Exists
-
-When Tapatalk is installed on a MyBB forum, it injects its own `manifest.json` for Progressive Web App installations. This means users who "Add to Home Screen" see Tapatalk's logo instead of the forum's branding.
-
-This plugin removes Tapatalk's manifest and replaces it with a custom one, so PWA installations display the correct SCG logo.
+Two issues:
+- Tapatalk overrides our favicon and webmanifest with their own branding. No, this is our website, not your app, bugger off. We rewrite it back to ours.
+- Tapatalk breaks emojis on the forum because they didn't ship half of the emoji images that they rewrite the content to. So we rewrite them back to emojis.
 
 ## Installation
 
