@@ -22,7 +22,7 @@ if(!defined('IN_MYBB'))
     die('This file cannot be accessed directly.');
 }
 
-// Hook into global_end to modify output after Tapatalk has added its manifest
+// Hook into global_end to add our manifest to the header
 $plugins->add_hook('global_end', 'tapatalk_fixer_manifest');
 
 // Run after Tapatalk's own hooks, which use the default priority of 10
@@ -63,38 +63,50 @@ function tapatalk_fixer_deactivate()
 }
 
 /**
- * Main function that removes Tapatalk's manifest and adds our own
- * Runs at the global_end hook, after Tapatalk has injected its manifest
+ * Adds our manifest link to the header
  */
 function tapatalk_fixer_manifest()
 {
     global $headerinclude;
 
+    // The manifest.json file should be placed in the forum root directory
+    $headerinclude .= "\n" . '<link rel="manifest" href="/forum/manifest.json">' . "\n";
+}
+
+/**
+ * Removes Tapatalk's manifest link. Tapatalk adds it just before </head> once the page is
+ * built, so this has to run on the finished page rather than at global_end.
+ */
+function tapatalk_fixer_remove_tapatalk_manifest($html)
+{
+    if(strpos($html, 'tapatalk-cdn.com') === false)
+    {
+        return $html;
+    }
+
     // Remove Tapatalk's manifest link (handles both attribute orders)
     // Pattern 1: href before rel
-    $headerinclude = preg_replace(
+    $html = preg_replace(
         '/<link[^>]*href=["\'][^"\']*tapatalk-cdn\.com[^"\']*["\'][^>]*rel=["\']manifest["\'][^>]*>/i',
         '',
-        $headerinclude
+        $html
     );
 
     // Pattern 2: rel before href
-    $headerinclude = preg_replace(
+    $html = preg_replace(
         '/<link[^>]*rel=["\']manifest["\'][^>]*href=["\'][^"\']*tapatalk-cdn\.com[^"\']*["\'][^>]*>/i',
         '',
-        $headerinclude
+        $html
     );
 
     // Also catch any manifest link pointing to groups.tapatalk-cdn.com specifically
-    $headerinclude = preg_replace(
+    $html = preg_replace(
         '/<link[^>]*href=["\']https:\/\/groups\.tapatalk-cdn\.com\/static\/manifest\/[^"\']*["\'][^>]*>/i',
         '',
-        $headerinclude
+        $html
     );
 
-    // Add our custom manifest link
-    // The manifest.json file should be placed in the forum root directory
-    $headerinclude .= "\n" . '<link rel="manifest" href="/forum/manifest.json">' . "\n";
+    return $html;
 }
 
 /**
@@ -117,11 +129,14 @@ function tapatalk_fixer_parse_message($message)
 }
 
 /**
- * Catches Tapatalk emoji added to the page after the message was parsed. Codes are left alone
- * here: on this page they can be in an editor, and converting them would rewrite the post.
+ * Fixes what Tapatalk adds to the finished page: its manifest link, and emoji added after the
+ * message was parsed. Codes are left alone here: on this page they can be in an editor, and
+ * converting them would rewrite the post.
  */
 function tapatalk_fixer_output_page($contents)
 {
+    $contents = tapatalk_fixer_remove_tapatalk_manifest($contents);
+
     return tapatalk_fixer_convert_emoji_html($contents);
 }
 
