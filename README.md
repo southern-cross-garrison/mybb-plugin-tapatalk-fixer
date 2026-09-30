@@ -11,4 +11,4 @@ The folder structure here mirrors what needs to be on the web root. This makes i
 1. Compress the files here excluding this readme.
 2. Upload the .zip file to the web root.
 3. Extract the .zip file and delete it from the web server.
-4. Go to **Admin CP → Configuration → Plugins** and activate "SCG PWA Manifest"
+4. Go to **Admin CP → Configuration → Plugins** and activate "SCG Tapatalk Fixer"
